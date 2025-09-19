@@ -3,8 +3,10 @@ name: Daily Placement Prep Bot
 # Triggers
 on:
   schedule:
-   # Runs every day at 12:40 PM IST → 07:10 UTC
+   # Runs every day at 1:00 PM IST → 07:30 UTC
     - cron: "30 7 * * *"
+    # Runs every day at 8:30 PM IST → 15:30 UTC
+    - cron: "30 15 * *"
   workflow_dispatch:  # optional manual trigger
 
 jobs:
