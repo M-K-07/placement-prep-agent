@@ -36,7 +36,8 @@ def get_question_answer():
     - Use **easy language**, as if explaining to a student preparing for an interview.  
     - Include **one reference link** for further reading.  
     - Format exactly like this:
-
+    Topic: <Topic Name>
+    
     Q: <question>  
     
     A: <answer>  
