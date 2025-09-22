@@ -131,7 +131,7 @@ async def send_daily_question(application):
     users=get_subscribed_users()
     for user_id,chat_id in users:
         topic=random.choice(TOPICS)
-        for _ in range(5):
+        for _ in range(3):
             content= get_question_answer(topic)
             print(content)
             if content:
