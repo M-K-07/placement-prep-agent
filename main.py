@@ -107,7 +107,7 @@ def get_question_answer(topic):
             "Content-Type": "application/json",
         },
         data=json.dumps({
-            "model": "deepseek/deepseek-chat-v3.1:free",
+            "model": "x-ai/grok-4-fast:free",
             "messages": [{"role": "user", "content": prompt}],
         })
     )
