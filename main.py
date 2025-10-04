@@ -8,7 +8,7 @@ from telegram.ext import Application, CommandHandler, ContextTypes
 import json
 import psycopg
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
-
+from rapidfuzz import fuzz
 # === Load environment variables ===
 load_dotenv()
 
@@ -75,10 +75,27 @@ def save_content(user_id, topic, question, answer, reference):
             VALUES (%s, %s, %s, %s, %s);
         """, (user_id, topic, question, answer, reference))
         
-def has_user_received_question(user_id, question):
+SIMILARITY_THRESHOLD = 85  
+
+
+def has_user_received_question(user_id, new_question):
     with conn.cursor() as cur:
-        cur.execute("SELECT 1 FROM content WHERE user_id = %s AND question = %s;", (user_id, question))
-        return cur.fetchone() is not None
+        cur.execute("SELECT question FROM content WHERE user_id = %s;", (user_id,))
+        past_questions = [row[0] for row in cur.fetchall()]
+
+    new_q_norm = new_question.lower().strip()
+    for past_q in past_questions:
+        past_q_norm = past_q.lower().strip()
+
+        if new_q_norm == past_q_norm:
+            return True
+
+        score = fuzz.token_set_ratio(new_q_norm, past_q_norm)
+        if score >= SIMILARITY_THRESHOLD:
+            print(f"⚠️ Similar question detected ({score}%): {new_question} ~ {past_q}")
+            return True
+
+    return False
     
 def get_question_answer(topic):
     prompt = f"""
@@ -107,7 +124,7 @@ def get_question_answer(topic):
             "Content-Type": "application/json",
         },
         data=json.dumps({
-            "model": "x-ai/grok-4-fast:free",
+            "model": "openai/gpt-oss-20b:free",
             "messages": [{"role": "user", "content": prompt}],
         })
     )
