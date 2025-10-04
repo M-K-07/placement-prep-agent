@@ -107,7 +107,7 @@ def get_question_answer(topic):
             "Content-Type": "application/json",
         },
         data=json.dumps({
-            "model": "x-ai/grok-4-fast:free",
+            "model": "openai/gpt-oss-20b:free",
             "messages": [{"role": "user", "content": prompt}],
         })
     )
